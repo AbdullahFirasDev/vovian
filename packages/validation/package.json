@@ -1,0 +1,14 @@
+{
+  "name": "@vovian/validation",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./checkout": "./src/checkout.ts"
+  },
+  "types": "./src/index.ts",
+  "dependencies": {
+    "zod": "^4.1.0"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "name": "@vovian/storefront",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "preview": "nuxt preview",
+    "generate": "nuxt generate",
+    "postinstall": "nuxt prepare || echo nuxt prepare skipped",
+    "typecheck": "nuxt typecheck",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "@nuxt/image": "^2.2.1",
+    "@nuxtjs/i18n": "^10.6.0",
+    "@nuxtjs/supabase": "^2.1.0",
+    "@pinia/nuxt": "^1.0.3",
+    "@supabase/supabase-js": "^2.119.0",
+    "@vovian/shared": "*",
+    "@vovian/types": "*",
+    "@vovian/validation": "*",
+    "gsap": "^3.15.1",
+    "markdown-it": "^15.0.3",
+    "nuxt": "^4.6.4",
+    "pinia": "^4.1.0",
+    "three": "^0.187.0",
+    "vue": "^3.5.0",
+    "zod": "^4.1.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.65.1",
+    "@tailwindcss/vite": "^4.3.5",
+    "@types/markdown-it": "^14.1.2",
+    "@types/three": "^0.187.0",
+    "tailwindcss": "^4.3.5",
+    "vue-tsc": "^3.3.14"
+  }
+}

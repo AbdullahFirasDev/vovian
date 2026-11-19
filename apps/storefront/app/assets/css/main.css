@@ -1,0 +1,203 @@
+@import "tailwindcss";
+
+/* ──────────────────────────────────────────────────────────────────────────
+   VOVIAN design tokens
+   Palette is the brief's black & white system. Graphite (#5E5E5E) is the only
+   addition: #777 fails AA contrast for small text on white (4.48:1), so small
+   meta text uses graphite while #777 ("stone") is reserved for ≥ 18px / UI lines.
+   ────────────────────────────────────────────────────────────────────────── */
+@theme {
+  --color-ink: #000000;
+  --color-night: #0a0a0a;
+  --color-white: #ffffff;
+  --color-paper: #f7f7f5;
+  --color-mist: #e8e8e8;
+  --color-stone: #777777;
+  --color-graphite: #5e5e5e;
+  --color-error: #b3261e;
+
+  --font-display: "Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
+  --font-sans: "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-arabic: "IBM Plex Sans Arabic", "Hanken Grotesk", system-ui, sans-serif;
+
+  /* Type scale after The Elements of Typographic Style */
+  --text-micro: 0.75rem;   /* 12 */
+  --text-small: 0.875rem;  /* 14 */
+  --text-body: 1rem;       /* 16 */
+  --text-lead: 1.125rem;   /* 18 */
+  --text-h5: 1.3125rem;    /* 21 */
+  --text-h4: 1.5rem;       /* 24 */
+  --text-h3: 2.25rem;      /* 36 */
+  --text-h2: 3rem;         /* 48 */
+  --text-h1: 4.5rem;       /* 72 */
+
+  --ease-couture: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-curtain: cubic-bezier(0.77, 0, 0.175, 1);
+
+  --breakpoint-xs: 24.375rem; /* 390 */
+}
+
+:root {
+  --gutter: 1rem;
+  --header-h: 4rem;
+  color-scheme: light;
+}
+
+@media (min-width: 768px) {
+  :root { --gutter: 1.5rem; --header-h: 4.5rem; }
+}
+@media (min-width: 1440px) {
+  :root { --gutter: 2.5rem; }
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  scroll-padding-top: calc(var(--header-h) + 1rem);
+}
+
+body {
+  @apply bg-white text-ink font-sans;
+  font-size: 1rem;
+  line-height: 1.55;
+  font-feature-settings: "ss01", "kern";
+  overflow-x: clip;
+}
+
+[dir="rtl"] body,
+[dir="rtl"] .font-sans {
+  font-family: var(--font-arabic);
+}
+
+/* Arabic has no Bodoni; display type switches to a light Plex Arabic with
+   generous size and tighter leading to keep the editorial contrast. */
+[dir="rtl"] .font-display {
+  font-family: var(--font-arabic);
+  font-weight: 300;
+  letter-spacing: 0;
+}
+
+/* The wordmark is a Latin logotype in every language */
+.wordmark {
+  font-family: var(--font-display) !important;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  font-variation-settings: "opsz" 96;
+}
+
+::selection { background: #000; color: #fff; }
+
+:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+/* ── Layout primitives ─────────────────────────────────────────────────── */
+@utility shell {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  max-width: 120rem;
+}
+
+@utility grid-editorial {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  @media (min-width: 768px) { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+}
+
+@utility display-xl {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  font-size: clamp(2.75rem, 7vw, 6rem);
+  font-variation-settings: "opsz" 96;
+}
+
+@utility display-lg {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.015em;
+  font-size: clamp(2.25rem, 4.6vw, 4.5rem);
+  font-variation-settings: "opsz" 72;
+}
+
+@utility display-md {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  font-size: clamp(1.75rem, 3vw, 3rem);
+  font-variation-settings: "opsz" 48;
+}
+
+@utility prose-vovian {
+  max-width: 68ch;
+  font-size: 1rem;
+  line-height: 1.7;
+  & h2 { font-family: var(--font-display); font-size: 1.75rem; line-height: 1.15; margin: 2.5rem 0 1rem; font-weight: 400; }
+  & h3 { font-weight: 600; margin: 2rem 0 0.5rem; }
+  & p { margin: 0 0 1rem; }
+  & ul, & ol { margin: 0 0 1.25rem; padding-inline-start: 1.25rem; }
+  & ul { list-style: disc; }
+  & ol { list-style: decimal; }
+  & li { margin-bottom: 0.4rem; }
+  & a { text-decoration: underline; text-underline-offset: 3px; }
+  & strong { font-weight: 600; }
+  & em { color: var(--color-graphite); }
+  & table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.875rem; display: block; overflow-x: auto; }
+  & th, & td { text-align: start; padding: 0.75rem 1rem 0.75rem 0; border-bottom: 1px solid var(--color-mist); vertical-align: top; }
+  & th { font-weight: 600; }
+}
+
+/* Underline link that draws in from the reading start */
+@utility link-draw {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.45s var(--ease-couture);
+  padding-bottom: 2px;
+  &:hover, &:focus-visible { background-size: 100% 1px; }
+  [dir="rtl"] & { background-position: 100% 100%; }
+}
+
+@utility link-static {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
+  &:hover { text-decoration-thickness: 2px; }
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+/* Skeleton shimmer */
+@keyframes shimmer { 100% { transform: translateX(100%); } }
+@utility skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-paper);
+  &::after {
+    content: "";
+    position: absolute; inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.7), transparent);
+    animation: shimmer 1.4s infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

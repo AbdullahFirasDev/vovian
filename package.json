@@ -1,0 +1,39 @@
+{
+  "name": "vovian",
+  "private": true,
+  "version": "1.0.0",
+  "description": "VOVIAN — premium fashion e-commerce platform (Nuxt storefront, React admin, Supabase backend)",
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev:store": "npm run dev -w @vovian/storefront",
+    "dev:admin": "npm run dev -w @vovian/admin",
+    "build": "npm run build -w @vovian/storefront && npm run build -w @vovian/admin",
+    "build:store": "npm run build -w @vovian/storefront",
+    "build:admin": "npm run build -w @vovian/admin",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:db": "supabase test db",
+    "test:e2e": "npm run test:e2e -w @vovian/storefront",
+    "db:start": "supabase start",
+    "db:stop": "supabase stop",
+    "db:reset": "supabase db reset",
+    "sync:functions": "node scripts/sync-functions.mjs",
+    "seed:generate": "node scripts/generate-seed.mjs",
+    "db:types": "supabase gen types typescript --local --schema public > packages/types/src/database.ts",
+    "admin:create": "node scripts/create-admin.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "supabase": "^3.1.0",
+    "typescript": "~5.9.3",
+    "vitest": "^5.1.0"
+  }
+}
