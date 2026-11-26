@@ -16,7 +16,8 @@ createRoot(document.getElementById('root')!).render(
     <QueryClientProvider client={queryClient}>
       <AccessProvider>
         <FeedbackProvider>
-          <BrowserRouter>
+          {/* /admin in production (vite base), / in local development */}
+          <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, '')}>
             <App />
           </BrowserRouter>
         </FeedbackProvider>

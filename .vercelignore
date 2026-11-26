@@ -1,0 +1,16 @@
+# Never upload local secrets or generated output to Vercel.
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+supabase/.temp
+supabase/.branches
+node_modules
+**/node_modules
+**/.output
+**/.nuxt
+**/dist
+**/test-results
+**/playwright-report

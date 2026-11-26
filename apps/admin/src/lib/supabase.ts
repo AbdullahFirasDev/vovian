@@ -6,7 +6,8 @@ export const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.m
   auth: { persistSession: true, autoRefreshToken: true, storageKey: 'vovian-admin-auth' },
 })
 
-export const STOREFRONT_URL = import.meta.env.VITE_STOREFRONT_URL ?? 'http://localhost:3000'
+// Same origin in production (storefront at /, admin at /admin); the local storefront in development.
+export const STOREFRONT_URL = import.meta.env.VITE_STOREFRONT_URL || (import.meta.env.PROD ? '' : 'http://localhost:3000')
 export const FUNCTIONS_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1`
 
 /** Throws on Supabase errors so TanStack Query surfaces them. */

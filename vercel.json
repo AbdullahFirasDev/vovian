@@ -1,27 +1,51 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "services": {
-    "admin": {
-      "root": "apps/admin",
-      "framework": "vite"
-    },
     "storefront": {
       "root": "apps/storefront",
-      "framework": "nuxtjs"
+      "framework": "nuxtjs",
+      "installCommand": "cd ../.. && npm ci",
+      "buildCommand": "npm run build"
+    },
+    "admin": {
+      "root": "apps/admin",
+      "framework": "vite",
+      "installCommand": "cd ../.. && npm ci",
+      "buildCommand": "npm run build",
+      "outputDirectory": "dist",
+      "headers": [
+        {
+          "source": "/admin/(.*)",
+          "headers": [
+            { "key": "X-Frame-Options", "value": "DENY" },
+            { "key": "X-Robots-Tag", "value": "noindex, nofollow" }
+          ]
+        },
+        {
+          "source": "/admin/assets/(.*)",
+          "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+        }
+      ],
+      "rewrites": [
+        { "source": "/admin/(.*)", "destination": "/admin/index.html" }
+      ]
     }
   },
-  "rewrites": [
-    {
-      "source": "/admin/(.*)",
-      "destination": {
-        "service": "admin"
-      }
-    },
+  "redirects": [
+    { "source": "/admin", "destination": "/admin/", "permanent": false }
+  ],
+  "headers": [
     {
       "source": "/(.*)",
-      "destination": {
-        "service": "storefront"
-      }
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" }
+      ]
     }
+  ],
+  "rewrites": [
+    { "source": "/admin/(.*)", "destination": { "service": "admin" } },
+    { "source": "/(.*)", "destination": { "service": "storefront" } }
   ]
 }

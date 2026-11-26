@@ -41,7 +41,7 @@ export function Login({ noAccess }: { noAccess?: boolean }) {
 
   async function forgot() {
     if (!email) return setError('Enter your email first, then choose “Reset password”.')
-    await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${window.location.origin}/reset-password` })
+    await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${window.location.origin}${import.meta.env.BASE_URL}reset-password` })
     setResetSent(true)
   }
 

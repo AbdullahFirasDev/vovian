@@ -17,7 +17,7 @@ npx supabase secrets set --env-file supabase/functions/.env   # see supabase/fun
 
 Dashboard settings:
 
-- **Auth › URL configuration:** set the Site URL to the storefront and add redirect URLs for `https://www.yourbrand.com/**` and `https://admin.yourbrand.com/**`.
+- **Auth › URL configuration:** set the Site URL to `https://vovian.vercel.app` and add the redirect URL `https://vovian.vercel.app/**` (plus `http://localhost:3000/**` and `http://localhost:5173/**` for local development).
 - **Auth › Email:** configure a custom SMTP provider. The built-in sender is rate-limited.
 - **Database › Replication:** the migrations add `orders` and `notifications` to `supabase_realtime`. Confirm Realtime is enabled.
 - **Storage:** the `media` bucket is created by migration (public read; uploads restricted by permission, MIME type and 10 MB).
@@ -36,31 +36,38 @@ npm run admin:create -- owner@yourbrand.com "Owner Name"
 
 The owner receives an invitation to set a password. Further staff are invited from **Admin › Staff & roles**.
 
-## 2. Storefront (Nuxt)
+## 2. Vercel: storefront + admin as one project (Vercel Services)
 
-**Vercel:** create a project with root directory `apps/storefront` (`vercel.json` installs from the monorepo root). Environment variables:
+The root `vercel.json` deploys both apps to one Vercel project:
+
+| Path | Service | Notes |
+| --- | --- | --- |
+| `/admin/*` | `apps/admin` (Vite SPA) | Built with base `/admin/` into `dist/admin`; deep links fall back to `index.html`; `noindex` + frame-deny headers |
+| everything else | `apps/storefront` (Nuxt SSR) | Server-rendered, SWR caching per `routeRules` |
+
+Both services install from the monorepo root (`cd ../.. && npm ci`) because they share `packages/*`. `.vercelignore` keeps local `.env` files out of uploads.
+
+```bash
+npx vercel link --project vovian
+npx vercel deploy          # preview (protected by Vercel Authentication)
+npx vercel deploy --prod   # production
+```
+
+Environment variables (Production and Preview):
 
 | Variable | Value |
 | --- | --- |
-| `SUPABASE_URL` | `https://<ref>.supabase.co` |
-| `SUPABASE_KEY` | publishable (anon) key |
-| `NUXT_PUBLIC_SITE_URL` | `https://www.yourbrand.com` (canonical URLs, sitemap, auth redirects) |
-| `NUXT_PUBLIC_FUNCTIONS_URL` | optional; defaults to `$SUPABASE_URL/functions/v1` |
+| `SUPABASE_URL` / `VITE_SUPABASE_URL` | `https://<ref>.supabase.co` |
+| `SUPABASE_KEY` / `VITE_SUPABASE_KEY` | publishable key (public by design; `VITE_` one is type *config*) |
+| `NUXT_PUBLIC_SITE_URL` | `https://vovian.vercel.app` (canonical URLs, sitemap, auth redirects) |
 | `NUXT_PUBLIC_IMAGE_TRANSFORMS` | `true` only with Supabase image transformations |
 
-**Self-hosted:** `docker build -f apps/storefront/Dockerfile --build-arg NUXT_PUBLIC_SITE_URL=https://www.yourbrand.com -t vovian-storefront .` then run it with the variables above (port 3000).
+The service role key, database password and access token are **not** needed on Vercel.
 
-## 3. Admin (React)
+After the first production deploy, update the edge function secrets so checkout is allowed from the new origin:
+`ALLOWED_ORIGINS=https://vovian.vercel.app`, `STOREFRONT_URL=https://vovian.vercel.app`, `ADMIN_URL=https://vovian.vercel.app/admin`.
 
-A static build (`apps/admin/dist`) works on any static host. Unknown paths must rewrite to `index.html`; `apps/admin/vercel.json` does this and adds `noindex`, frame-deny and security headers.
-
-| Variable (build time) | Value |
-| --- | --- |
-| `VITE_SUPABASE_URL` | `https://<ref>.supabase.co` |
-| `VITE_SUPABASE_KEY` | publishable (anon) key |
-| `VITE_STOREFRONT_URL` | `https://www.yourbrand.com` |
-
-Put the admin on its own subdomain and, ideally, behind SSO or IP allow-listing at the edge. Data access is enforced by the database either way.
+**Self-hosted alternative:** `docker build -f apps/storefront/Dockerfile --build-arg NUXT_PUBLIC_SITE_URL=https://www.yourbrand.com -t vovian-storefront .` for the storefront; the admin build (`apps/admin/dist`, served under `/admin/`) works on any static host that rewrites `/admin/*` to `/admin/index.html`.
 
 ## Checklist before launch
 
